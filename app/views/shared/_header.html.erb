@@ -1,0 +1,37 @@
+<header class="site-header">
+  <nav>
+    <%= link_to t("nav.main"), root_path %> |
+    <%= link_to t("nav.help"), help_path %> |
+    <%= link_to t("nav.about"), about_path %> |
+    <%= link_to t("nav.themes"), themes_path %>
+
+    <% if user_signed_in? %>
+      |
+      <div class="dropdown" style="display:inline-block;">
+        <span><%= current_user.name.presence || current_user.email %> ▾</span>
+        <div class="dropdown-menu" style="position:absolute;display:none;background:#fff;border:1px solid #ddd;padding:.5rem;">
+          <%= link_to t("nav.my_page"), my_page_path %><br>
+          <%= link_to t("nav.account"), edit_user_registration_path %><br>
+          <%= form_with url: destroy_user_session_path, method: :delete do %>
+            <%= submit_tag t("nav.logout"), class: "btn" %>
+          <% end %>
+        </div>
+      </div>
+      <script>
+          document.addEventListener("click", (e)=>{
+              const dd = document.querySelector(".dropdown");
+              if(!dd) return;
+              const menu = dd.querySelector(".dropdown-menu");
+              if(dd.contains(e.target)) menu.style.display = (menu.style.display==="block"?"none":"block");
+              else menu.style.display = "none";
+          });
+      </script>
+    <% else %>
+      | <%= link_to t("nav.login"), new_user_session_path %> /
+      <%= link_to t("nav.signup"), new_user_registration_path %>
+    <% end %>
+
+    | <%= link_to "РУС", switch_locale_path(:ru) %> · <%= link_to "ENG", switch_locale_path(:en) %>
+  </nav>
+  <hr>
+</header>

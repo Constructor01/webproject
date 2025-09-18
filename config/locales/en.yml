@@ -1,0 +1,52 @@
+en:
+  nav:
+    main: "Main"
+    help: "Help"
+    about: "About"
+    themes: "Themes"
+    my_page: "My Page"
+    account: "Account"
+    logout: "Logout"
+    login: "Login"
+    signup: "Sign up"
+  flash:
+    rating_saved: "Your rating has been saved."
+  pages:
+    help:
+      title: "Help"
+      text: "This app collects expert ratings for images grouped by themes."
+    about:
+      title: "About"
+      text: "Demo app for collecting and aggregating expert judgments."
+    main:
+      title: "Working page"
+      select_image: "Select image"
+      theme: "Theme"
+      show: "Show"
+      no_image: "No image attached"
+      prev: "Prev"
+      next: "Next"
+      give_score: "Your score"
+      comment: "Comment"
+      submit: "Submit"
+      aggregate_result: "Aggregate result"
+      avg_value: "Average value"
+      no_ratings_yet: "No ratings yet"
+      table_results: "Your recent ratings in this theme"
+      image: "Image"
+      my_value: "My value"
+      when: "When"
+      no_my_ratings: "No your ratings yet for this theme."
+      open: "Open"
+      no_images_in_theme: "No images in selected theme."
+      login_to_rate_html: "Please %{login} to rate."
+    themes:
+      title: "Themes"
+      images: "images"
+    profile:
+      title: "My Page"
+      name: "Name"
+      email: "Email"
+      total_ratings: "Total ratings"
+      close_to_average: "Your ratings close to community average (±25%)"
+      no_close: "Your ratings differ significantly from the expert community."

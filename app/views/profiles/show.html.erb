@@ -1,0 +1,52 @@
+<h1><%= t("pages.profile.title") %></h1>
+
+<section style="display:flex;gap:1rem;align-items:center;">
+  <div>
+    <% if @user.avatar.attached? %>
+      <%= image_tag @user.avatar.variant(resize_to_limit: [120,120]),
+                    alt: @user.name, style: "border-radius:50%;" %>
+    <% else %>
+      <div style="width:120px;height:120px;border-radius:50%;background:#ddd;display:flex;align-items:center;justify-content:center;">
+        <span>🙂</span>
+      </div>
+    <% end %>
+  </div>
+  <div>
+    <p><strong><%= t("pages.profile.name") %>:</strong> <%= @user.name.presence || "—" %></p>
+    <p><strong><%= t("pages.profile.email") %>:</strong> <%= @user.email %></p>
+    <p><strong><%= t("pages.profile.total_ratings") %>:</strong> <%= @total_ratings %></p>
+  </div>
+</section>
+
+<hr>
+
+<h2><%= t("pages.profile.close_to_average") %></h2>
+<% if @has_near %>
+  <table border="1" cellpadding="4">
+    <thead>
+    <tr>
+      <th><%= t("pages.main.image") %></th>
+      <th><%= t("pages.main.my_value") %></th>
+      <th><%= t("pages.main.avg_value") %></th>
+      <th><%= t("pages.main.when") %></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @near_community.each do |r| %>
+      <tr>
+        <td>
+          <% if r.image.photo.attached? %>
+            <%= image_tag r.image.photo.variant(resize_to_limit: [80,60]) %><br>
+          <% end %>
+          <%= r.image.title %>
+        </td>
+        <td><%= r.value %></td>
+        <td><%= number_with_precision(r.image.average_rating, precision: 2) %></td>
+        <td><%= l(r.created_at, format: :short) %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p><strong><%= t("pages.profile.no_close") %></strong></p>
+<% end %>

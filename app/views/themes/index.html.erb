@@ -1,0 +1,11 @@
+<h1><%= t("pages.themes.title") %></h1>
+<ul>
+  <% @themes.each do |th| %>
+    <li>
+      <strong><%= th.name %></strong> — <%= th.images.count %> <%= t("pages.themes.images") %>
+      <% if th.images.first %>
+        | <%= link_to t("pages.main.open"), root_path(theme_id: th.id, index: 0) %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>

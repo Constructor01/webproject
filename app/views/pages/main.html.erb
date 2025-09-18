@@ -1,0 +1,117 @@
+<h1><%= t("pages.main.title") %></h1>
+
+<section>
+  <h3><%= t("pages.main.select_image") %></h3>
+  <%= form_with url: root_path, method: :get, local: true do |f| %>
+    <label><%= t("pages.main.theme") %>:
+      <select name="theme_id">
+        <% @themes.each do |th| %>
+          <option value="<%= th.id %>" <%= "selected" if th == @current_theme %>>
+            <%= th.name %> (<%= th.images.count %>)
+          </option>
+        <% end %>
+      </select>
+    </label>
+    <input type="hidden" name="index" value="0">
+    <%= f.submit t("pages.main.show") %>
+  <% end %>
+</section>
+
+<% if @current_image.present? %>
+  <section style="margin-top:1rem;">
+    <h3><%= @current_image.title %></h3>
+    <div style="display:flex;gap:1rem;align-items:flex-start;">
+      <div style="min-width:300px;">
+        <% if @current_image.photo.attached? %>
+          <%= image_tag @current_image.photo.variant(resize_to_limit: [600,400]) %>
+        <% else %>
+          <div style="width:600px;height:400px;background:#eee;display:flex;align-items:center;justify-content:center;">
+            <em><%= t("pages.main.no_image") %></em>
+          </div>
+        <% end %>
+        <div style="margin-top:.5rem;">
+          <% prev_index = (@index - 1) %>
+          <% next_index = (@index + 1) %>
+          <% prev_index = @images_count - 1 if prev_index < 0 %>
+          <% next_index = 0 if next_index >= @images_count %>
+          <%= link_to "⟵ " + t("pages.main.prev"),
+                      root_path(theme_id: @current_theme.id, index: prev_index),
+                      class: "btn" %>
+          <%= link_to t("pages.main.next") + " ⟶",
+                      root_path(theme_id: @current_theme.id, index: next_index),
+                      class: "btn" %>
+          <span style="margin-left:1rem;"><%= (@index+1) %> / <%= @images_count %></span>
+        </div>
+      </div>
+
+      <div>
+        <h4><%= t("pages.main.give_score") %> (0–100)</h4>
+        <% if user_signed_in? %>
+          <%= form_with model: ExpertRating.new, url: expert_ratings_path, local: true do |f| %>
+            <%= hidden_field_tag :image_id, @current_image.id %>
+            <%= hidden_field_tag :redirect_params, { theme_id: @current_theme.id, index: @index }.to_param %>
+            <input type="range" name="value" min="0" max="100" value="50"
+                   oninput="document.getElementById('val').innerText=this.value">
+            <div><strong><span id="val">50</span></strong></div>
+            <div style="margin-top:.5rem;">
+              <label><%= t("pages.main.comment") %>:
+                <textarea name="comment" rows="3" cols="30"></textarea>
+              </label>
+            </div>
+            <div style="margin-top:.5rem;">
+              <%= f.submit t("pages.main.submit") %>
+            </div>
+          <% end %>
+        <% else %>
+          <p><%= t("pages.main.login_to_rate_html", login: link_to(t("nav.login"), new_user_session_path)) %></p>
+        <% end %>
+
+        <div style="margin-top:1rem;">
+          <h4><%= t("pages.main.aggregate_result") %></h4>
+          <% avg = @current_image.average_rating %>
+          <% if avg %>
+            <p><%= t("pages.main.avg_value") %>:
+              <strong><%= number_with_precision(avg, precision: 2) %></strong></p>
+          <% else %>
+            <p><em><%= t("pages.main.no_ratings_yet") %></em></p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-top:1rem;">
+    <h3><%= t("pages.main.table_results") %></h3>
+    <% if @my_ratings.present? %>
+      <table border="1" cellpadding="4">
+        <thead>
+        <tr>
+          <th><%= t("pages.main.image") %></th>
+          <th><%= t("pages.main.my_value") %></th>
+          <th><%= t("pages.main.avg_value") %></th>
+          <th><%= t("pages.main.when") %></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @my_ratings.each do |r| %>
+          <tr>
+            <td>
+              <% if r.image.photo.attached? %>
+                <%= image_tag r.image.photo.variant(resize_to_limit: [80,60]) %><br>
+              <% end %>
+              <%= r.image.title %>
+            </td>
+            <td><%= r.value %></td>
+            <td><%= number_with_precision(r.image.average_rating, precision: 2) %></td>
+            <td><%= l(r.created_at, format: :short) %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p><em><%= t("pages.main.no_my_ratings") %></em></p>
+    <% end %>
+  </section>
+<% else %>
+  <p><em><%= t("pages.main.no_images_in_theme") %></em></p>
+<% end %>

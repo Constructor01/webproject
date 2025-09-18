@@ -1,0 +1,20 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  username: adminruby
+  password: root
+  host: localhost
+
+development:
+  <<: *default
+  database: expert_ratings_development
+
+test:
+  <<: *default
+  database: expert_ratings_test
+
+production:
+  <<: *default
+  database: expert_ratings_production
+  # username/password из ENV
